@@ -9,6 +9,12 @@ class CalcIMC extends StatefulWidget {
 }
 
 class _CalcIMCState extends State<CalcIMC> {
+  double peso = 0;
+  double altura = 0;
+  double calcular = 0;
+  String calculoImc = "";
+  var resultado = TextEditingController();
+  String resultadoText = '';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,8 +35,7 @@ class _CalcIMCState extends State<CalcIMC> {
                   width: 200,
                   height: 200,
                 ),
-                // Container de espaçamento:
-                EspacamentoH(h: 20),
+
                 Titulo2(txt: "Calculadora IMC:"),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -41,6 +46,10 @@ class _CalcIMCState extends State<CalcIMC> {
                         child: TextField(
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(labelText: 'Peso'),
+                          onChanged: (value) {
+                            peso = double.tryParse(value) ?? 0.00;
+                            // Fazer as verificações:
+                          },
                         )),
                     // Container de espaçamento:
                     EspacamentoW(w: 10),
@@ -50,16 +59,45 @@ class _CalcIMCState extends State<CalcIMC> {
                       child: TextField(
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(labelText: 'Altura'),
+                        onChanged: (value) {
+                          altura = double.tryParse(value) ?? 0.00;
+                          // Fazer as verificações:
+                        },
                       ),
                     ),
                   ],
                 ),
-                TextField(
-                  enabled: false,
-                  decoration: InputDecoration(
-                      alignLabelWithHint: true,
-                      labelStyle: TextStyle(fontWeight: FontWeight.bold),
-                      labelText: 'RESULTADO'),
+                // Container de espaçamento:
+                EspacamentoH(h: 20),
+                Container(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                        onPressed: () {
+                          var imc;
+                          imc = peso / (altura * altura);
+                          if (imc < 16) {
+                            calculoImc = 'Magreza severa';
+                          } else if (imc < 17) {
+                            calculoImc = 'Magreza moderada';
+                          } else if (imc < 18.5) {
+                            calculoImc = 'Magreza leve';
+                          } else if (imc < 25) {
+                            calculoImc = 'Magreza normal';
+                          } else if (imc < 30) {
+                            calculoImc = 'Sobrepeso';
+                          } else if (imc < 35) {
+                            calculoImc = ' Obsesidade grau 1';
+                          } else if (imc < 40) {
+                            calculoImc = ' Obsesidade grau 2';
+                          }
+                          setState(() {
+                            resultadoText = imc.toStringAsFixed(2);
+                          });
+                        },
+                        child: Text("CALCULAR"))),
+
+                Titulo2(
+                  txt: "Resultado:  $resultadoText $calculoImc",
                 )
               ],
             ),

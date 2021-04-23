@@ -10,6 +10,15 @@ class ConversorMoeda extends StatefulWidget {
 }
 
 class _ConversorMoedaState extends State<ConversorMoeda> {
+  // Valores das moedas:
+  double usd = 5.60;
+  double eur = 6.70;
+  double btc = 320156.14;
+  // Variável p/ controlar o dropdow:
+  String moedaSelecionada = 'USD';
+  // Variável p/ controlar o campo de resultado:
+  var resultado = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,7 +50,23 @@ class _ConversorMoedaState extends State<ConversorMoeda> {
                     labelText: 'Valor em R\$',
                   ),
                   onChanged: (value) {
-                    print(value);
+                    //print(value);
+                    setState(() {
+                      // Variável para receber o novo valor da conversão;
+                      var novoValor;
+                      var real = double.tryParse(value) ?? 0.00;
+                      // Fazer as verificações:
+                      if (moedaSelecionada == 'USD') {
+                        novoValor = real / usd;
+                      } else if (moedaSelecionada == 'EUR') {
+                        novoValor = real / eur;
+                      } else if (moedaSelecionada == 'BTC') {
+                        novoValor = real / btc;
+                      }
+
+                      // Atribuir o valor na variável controladora do campo do resultado:
+                      resultado.text = novoValor.toStringAsFixed(2);
+                    });
                   },
                 ),
                 // Linha com os campos de resultado:
@@ -55,6 +80,7 @@ class _ConversorMoedaState extends State<ConversorMoeda> {
                           height: 56,
                           // Item do dropdown:
                           child: DropdownButton(
+                            value: moedaSelecionada,
                             isExpanded: true,
                             iconEnabledColor: Colors.pink,
                             underline: Container(
@@ -71,7 +97,11 @@ class _ConversorMoedaState extends State<ConversorMoeda> {
                               DropdownMenuItem(
                                   value: 'BTC', child: Text('BTC')),
                             ],
-                            onChanged: (value) {},
+                            onChanged: (value) {
+                              setState(() {
+                                moedaSelecionada = value.toString();
+                              });
+                            },
                           ),
                         )),
                     // Container de espaçamento:
@@ -80,6 +110,8 @@ class _ConversorMoedaState extends State<ConversorMoeda> {
                     Expanded(
                       flex: 2,
                       child: TextField(
+                        enabled: false,
+                        controller: resultado,
                         decoration: InputDecoration(),
                       ),
                     ),
